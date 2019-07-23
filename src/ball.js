@@ -42,13 +42,16 @@ export default class Ball {
     }
 
     hitAction(clickX, clickY) {
-        this.puttSound.play();
+        let ballVelocity = Math.sqrt(Math.pow(this.xv, 2) + Math.pow(this.yv, 2));
+        if (ballVelocity < 1) {
+            this.puttSound.play();
 
-        let xDiff = clickX - this.x;
-        let yDiff = clickY - this.y;
-
-        this.xv += -xDiff * 5;
-        this.yv += -yDiff * 5;
+            let xDiff = clickX - this.x;
+            let yDiff = clickY - this.y;
+    
+            this.xv += -xDiff * 5;
+            this.yv += -yDiff * 5;
+        }
     }
 
     decel(rollDecel) {
@@ -110,8 +113,9 @@ export default class Ball {
         if (this.downHeld) {
             this.yv += this.accel;
         }
-
+        
         this.decel(rollDecel);
+
         this.x += this.xv * step;
         this.y += this.yv * step;
     }

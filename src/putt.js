@@ -29,7 +29,7 @@ function sound(src) {
 
 let puttSound = new sound("/snd/putt.mp3");
 let cupSound = new sound("/snd/cup.mp3");
-let tapSound = new sound("/snd/tap.mp3");
+let wallSound = new sound("/snd/wall.mp3");
 
 let backgroundColor = "#555555";
 
@@ -49,7 +49,7 @@ let hole1 = new Hole(cup1, walls1, zones1, 225, 250);
 
 let holes = [hole1];
 
-let game = new Game(backgroundColor, ball, holes, cupSound, tapSound);
+let game = new Game(backgroundColor, ball, holes, cupSound, wallSound);
 game.loadHole(0);
 
 let windowHandler = new WindowHandler(canvas, game, .9);

@@ -1,12 +1,10 @@
 export default class Game {
-    constructor(backgroundColor, ball, holes, cupSound, tapSound) {
+    constructor(backgroundColor, ball, holes, cupSound, wallSound) {
         this.backgroundColor = backgroundColor;
-        this.gameWidth = 1000;
-        this.gameHeight = 500;
         this.ball = ball;
         this.holes = holes;
         this.cupSound = cupSound;
-        this.tapSound = tapSound;
+        this.wallSound = wallSound;
         this.playCupSound = true;
 
         this.rollDecel = 0.4;
@@ -79,7 +77,7 @@ export default class Game {
         for (var i = 0; i < this.currentHole.walls.length; i++) {
             let wall = this.currentHole.walls[i];
             if (wall.ballIsInContact(this.ball)) {
-                this.tapSound.play();
+                this.wallSound.play();
                 [this.ball.x, this.ball.y] = wall.getBallPositionAlongWall(this.ball);
                 if (wall.width > wall.height) {
                     this.ball.yv = -this.ball.yv * this.bounceWall;
@@ -94,7 +92,7 @@ export default class Game {
 
     // determine whether the ball is over the cup
     ballIsOverCup(x, y, r) {
-        if (Math.sqrt( Math.pow(this.ball.x - x, 2) + Math.pow(this.ball.y - y, 2) ) <= r + this.ball.radius / 4) {
+        if (Math.sqrt( Math.pow(this.ball.x - x, 2) + Math.pow(this.ball.y - y, 2) ) <= r) {
             return true
         }
 		return false

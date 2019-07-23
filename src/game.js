@@ -1,26 +1,31 @@
 export default class Game {
-    constructor(ctx, backgroundColor, ball, cup) {
-        this.ctx = ctx;
+    constructor(backgroundColor, ball, holes, cupSound, tapSound) {
         this.backgroundColor = backgroundColor;
         this.gameWidth = 1000;
         this.gameHeight = 500;
         this.ball = ball;
-        this.ball.game = this;
-        this.cup = cup;
-        this.cup.game = this;
+        this.holes = holes;
+        this.cupSound = cupSound;
+        this.tapSound = tapSound;
+        this.playCupSound = true;
 
         this.rollDecel = 0.4;
-        this.cupDecel = 20;
-
-        this.ball.x = 500;
-        this.ball.y = 250;
-        this.ball.xv = 0;
-        this.ball.yv = 0;
+        this.cupDecel = 12;
+        this.cupCenterPull = 12;
 
         this.shadowX = -100;
         this.shadowY = -100;
 
         this.bounceWall = 0.35;
+    }
+
+    loadHole(num) {
+        this.currentHole = this.holes[num];
+        this.cup = this.currentHole.cup;
+        this.ball.x = this.currentHole.startX;
+        this.ball.y = this.currentHole.startY;
+        this.ball.xv = 0;
+        this.ball.yv = 0;
     }
 
     // get the current time (high precision)
@@ -29,7 +34,7 @@ export default class Game {
     }
 
     handleCollisions() {
-        // ball hits wall
+        // ball hits edge of window
         if (this.ball.x <= this.ball.radius) {
             this.ball.x = this.ball.radius;
             this.ball.xv = -this.ball.xv * this.bounceWall;
@@ -45,29 +50,98 @@ export default class Game {
             this.ball.yv = -this.ball.yv * this.bounceWall;
         }
 
-        // ball is "over" the cup
+        // ball is over the cup
         if (this.ballIsOverCup(this.cup.x, this.cup.y, this.cup.radius)) {
+
+            this.ball.decel(this.cupDecel);
+            this.pullBallTowardCupCenter(this.cupCenterPull);
+
             let ballVelocity = Math.sqrt(Math.pow(this.ball.xv, 2) + Math.pow(this.ball.yv, 2));
-            if (ballVelocity < 500) {
-                this.ball.decel(this.cupDecel);
-            }
             if (ballVelocity < 10) {
                 this.ball.x = this.cup.x;
                 this.ball.y = this.cup.y;
+                this.ball.xv = 0;
+                this.ball.yv = 0;
                 this.ball.radius = 4;
+                this.ball.color = "#CCCCCC";
+                if (this.playCupSound) {
+                    this.cupSound.play();
+                    this.playCupSound = false;
+                }
             }
         } else {
             this.ball.radius = 5;
+            this.ball.color = "#FFFFFF";
+            this.playCupSound = true;
         }
 
+        // ball hits a wall
+        for (var i = 0; i < this.currentHole.walls.length; i++) {
+            let wall = this.currentHole.walls[i];
+            if (wall.ballIsInContact(this.ball)) {
+                this.tapSound.play();
+                [this.ball.x, this.ball.y] = wall.getBallPositionAlongWall(this.ball);
+                if (wall.width > wall.height) {
+                    this.ball.yv = -this.ball.yv * this.bounceWall;
+                    this.ball.xv = this.ball.xv * 0.8;
+                } else {
+                    this.ball.xv = -this.ball.xv * this.bounceWall;
+                    this.ball.yv = this.ball.yv * 0.8;
+                }
+            }
+        }
     }
 
     // determine whether the ball is over the cup
     ballIsOverCup(x, y, r) {
-        if (Math.sqrt( Math.pow(this.ball.x - x, 2) + Math.pow(this.ball.y - y, 2) ) <= r + this.ball.radius / 3) {
+        if (Math.sqrt( Math.pow(this.ball.x - x, 2) + Math.pow(this.ball.y - y, 2) ) <= r + this.ball.radius / 4) {
             return true
         }
 		return false
+    }
+
+    pullBallTowardCupCenter() {
+        let cup = this.currentHole.cup;
+        let ball = this.ball;
+        let xDiff = cup.x - ball.x;
+        let yDiff = cup.y - ball.y;
+        let distanceFromCenter = Math.sqrt( Math.pow(xDiff, 2) + Math.pow(yDiff, 2) );
+        let accelRatio = (cup.radius - distanceFromCenter) / cup.radius;
+        let atanDegrees = ball.degrees(Math.atan(yDiff / xDiff));
+        let angle = 0, deltaXV = 0, deltaYV = 0;
+        if (xDiff > 0) {
+            angle = atanDegrees;
+            deltaXV = Math.cos(ball.radians(angle));
+            deltaYV = Math.sin(ball.radians(angle));
+        } else if (xDiff < 0) {
+            if (yDiff > 0) {
+                angle = 180 + atanDegrees;
+            } else if (yDiff < 0) {
+                angle = -180 + atanDegrees;
+            }
+            deltaXV = Math.cos(ball.radians(angle));
+            deltaYV = Math.sin(ball.radians(angle));
+        } else if (xDiff == 0) {
+            if (yDiff > 0) {
+                angle = -90;
+            } else {
+                angle = 90
+            }
+            deltaXV = -Math.cos(ball.radians(angle));
+            deltaYV = -Math.sin(ball.radians(angle));
+        } else if (yDiff == 0) {
+            angle = 180;
+            deltaXV = -Math.cos(ball.radians(angle));
+            deltaYV = -Math.sin(ball.radians(angle));
+        }
+        this.ball.xv += deltaXV * this.cupCenterPull;
+        this.ball.yv += deltaYV * this.cupCenterPull;
+    }
+
+    // adapt all scalable game fields to the size of the window
+    resize(newWidth, newHeight) {
+        this.gameWidth = newWidth;
+        this.gameHeight = newHeight;
     }
 
     update(step) {
@@ -75,15 +149,25 @@ export default class Game {
         this.handleCollisions();
     }
 
-    draw() {
+    draw(ctx) {
         // clear and fill with background color
-        this.ctx.clearRect(0, 0, this.gameWidth, this.gameHeight);
-        this.ctx.fillStyle = this.backgroundColor;
-        this.ctx.fillRect(0, 0, this.gameWidth, this.gameHeight);
+        ctx.clearRect(0, 0, this.gameWidth, this.gameHeight);
+        ctx.fillStyle = this.backgroundColor;
+        ctx.fillRect(0, 0, this.gameWidth, this.gameHeight);
 
-        this.cup.draw();
+        // draw zones
+        for (var i = 0; i < this.currentHole.zones.length; i++) {
+            this.currentHole.zones[i].draw(ctx);
+        }
 
-        this.ball.draw();
+        // draw walls
+        for (var i = 0; i < this.currentHole.walls.length; i++) {
+            this.currentHole.walls[i].draw(ctx);
+        }
+
+        this.cup.draw(ctx);
+
+        this.ball.draw(ctx);
 
         // this.ctx.fillStyle = "#000000";
         // this.ctx.beginPath();

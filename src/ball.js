@@ -1,28 +1,49 @@
 export default class Ball {
-    constructor(radius, color) {
+    constructor(radius, color, puttSound) {
         this.radius = radius;
         this.color = color;
+        this.leftHeld = false;
+        this.rightHeld = false;
+        this.upHeld = false;
+        this.downHeld = false;
+        this.accel = 2;
+        this.puttSound = puttSound;
     }
 
     keyAction(keyDown, keyUp) {
-        let accel = 50;
         switch(keyDown) {
             case "left":
-                this.xv += -accel;
+                this.leftHeld = true;
                 break;
             case "right":
-                this.xv += accel;
+                this.rightHeld = true;
                 break;
             case "up":
-                this.yv += -accel;
+                this.upHeld = true;
                 break;
             case "down":
-                this.yv += accel;
+                this.downHeld = true;
+                break;
+        }
+        switch(keyUp) {
+            case "left":
+                this.leftHeld = false;
+                break;
+            case "right":
+                this.rightHeld = false;
+                break;
+            case "up":
+                this.upHeld = false;
+                break;
+            case "down":
+                this.downHeld = false;
                 break;
         }
     }
 
-    hit(clickX, clickY) {
+    hitAction(clickX, clickY) {
+        this.puttSound.play();
+
         let xDiff = clickX - this.x;
         let yDiff = clickY - this.y;
 
@@ -77,13 +98,25 @@ export default class Ball {
     }
 
     update(step, rollDecel) {
+        if (this.leftHeld) {
+            this.xv += -this.accel;
+        }
+        if (this.rightHeld) {
+            this.xv += this.accel;
+        }
+        if (this.upHeld) {
+            this.yv += -this.accel;
+        }
+        if (this.downHeld) {
+            this.yv += this.accel;
+        }
+
         this.decel(rollDecel);
         this.x += this.xv * step;
         this.y += this.yv * step;
     }
 
-    draw() {
-        var ctx = this.game.ctx;
+    draw(ctx) {
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);

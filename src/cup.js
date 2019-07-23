@@ -5,8 +5,7 @@ export default class Cup {
         this.radius = radius;
     }
 
-    draw() {
-        var ctx = this.game.ctx;
+    draw(ctx) {
         ctx.fillStyle = "#000000";
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);

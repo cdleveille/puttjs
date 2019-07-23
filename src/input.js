@@ -22,6 +22,23 @@ export default class InputHandler{
             }
         });
 
+        document.addEventListener("keyup", (event) => {
+            switch(event.keyCode) {
+                case left:
+                    game.ball.keyAction(null, "left");
+                    break;
+                case right:
+                    game.ball.keyAction(null, "right");
+                    break;
+                case up:
+                    game.ball.keyAction(null, "up");
+                    break;
+                case down:
+                    game.ball.keyAction(null, "down");
+                    break;
+            }
+        });
+
         canvas.addEventListener('click', (event) => {
             let clickX = event.clientX - ((window.innerWidth - canvas.width) / 2)
             let clickY = event.clientY - ((window.innerHeight - canvas.height) / 2)
@@ -29,7 +46,7 @@ export default class InputHandler{
             game.shadowX = clickX;
             game.shadowY = clickY;
             
-            game.ball.hit(clickX, clickY);
+            game.ball.hitAction(clickX, clickY);
         });
     }
 }

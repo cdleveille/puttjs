@@ -1,5 +1,5 @@
 export default class Ball {
-    constructor(radius, color, puttSound) {
+    constructor(radius, color, puttSounds) {
         this.radius = radius;
         this.color = color;
         this.leftHeld = false;
@@ -7,7 +7,8 @@ export default class Ball {
         this.upHeld = false;
         this.downHeld = false;
         this.accel = 2;
-        this.puttSound = puttSound;
+        this.puttSounds = puttSounds;
+        this.isInCup = false;
     }
 
     keyAction(keyDown, keyUp) {
@@ -42,12 +43,23 @@ export default class Ball {
     }
 
     hitAction(clickX, clickY) {
-        let ballVelocity = Math.sqrt(Math.pow(this.xv, 2) + Math.pow(this.yv, 2));
-        if (ballVelocity < 1) {
-            this.puttSound.play();
+        let currentBallVelocity = Math.sqrt(Math.pow(this.xv, 2) + Math.pow(this.yv, 2));
+        if (currentBallVelocity < 1 || this.isInCup) {
 
             let xDiff = clickX - this.x;
             let yDiff = clickY - this.y;
+
+            let newBallVelocity = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+
+            if (newBallVelocity > 100) {
+                this.puttSounds.putt1.play();
+            } else if (newBallVelocity > 66) {
+                this.puttSounds.putt2.play();
+            } else if (newBallVelocity > 33) {
+                this.puttSounds.putt3.play();
+            } else {
+                this.puttSounds.putt4.play();
+            }
     
             this.xv += -xDiff * 5;
             this.yv += -yDiff * 5;

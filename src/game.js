@@ -1,13 +1,13 @@
 export default class Game {
-    constructor(backgroundColor, ball, holes, cupSound, wallSound) {
+    constructor(backgroundColor, ball, holes, cupSound, wallSounds) {
         this.backgroundColor = backgroundColor;
         this.ball = ball;
         this.holes = holes;
         this.cupSound = cupSound;
-        this.wallSound = wallSound;
+        this.wallSounds = wallSounds;
         this.playCupSound = true;
 
-        this.rollDecel = 0.4;
+        this.rollDecel = 0.37;
         this.cupDecel = 12;
         this.cupCenterPull = 12;
 
@@ -56,6 +56,7 @@ export default class Game {
 
             let ballVelocity = Math.sqrt(Math.pow(this.ball.xv, 2) + Math.pow(this.ball.yv, 2));
             if (ballVelocity < 10) {
+                this.ball.isInCup = true;
                 this.ball.x = this.cup.x;
                 this.ball.y = this.cup.y;
                 this.ball.xv = 0;
@@ -68,6 +69,7 @@ export default class Game {
                 }
             }
         } else {
+            this.ball.isInCup = false;
             this.ball.radius = 5;
             this.ball.color = "#FFFFFF";
             this.playCupSound = true;
@@ -77,7 +79,18 @@ export default class Game {
         for (var i = 0; i < this.currentHole.walls.length; i++) {
             let wall = this.currentHole.walls[i];
             if (wall.ballIsInContact(this.ball)) {
-                this.wallSound.play();
+                
+                let currentBallVelocity = Math.sqrt(Math.pow(this.ball.xv, 2) + Math.pow(this.ball.yv, 2));
+                if (currentBallVelocity > 600) {
+                    this.wallSounds.wall1.play();
+                } else if (currentBallVelocity > 400) {
+                    this.wallSounds.wall2.play();
+                } else if (currentBallVelocity > 200) {
+                    this.wallSounds.wall3.play();
+                } else {
+                    this.wallSounds.wall4.play();
+                }
+
                 [this.ball.x, this.ball.y] = wall.getBallPositionAlongWall(this.ball);
                 if (wall.width > wall.height) {
                     this.ball.yv = -this.ball.yv * this.bounceWall;

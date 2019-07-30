@@ -6,6 +6,7 @@ import Cup from "/src/cup.js";
 import Hole from "/src/hole.js";
 import Wall from "/src/wall.js";
 import Zone from "/src/zone.js";
+import Slope from "/src/slope.js";
 import InputHandler from "/src/input.js";
 import WindowHandler from "/src/window.js";
 import Sound from "/src/sound.js";
@@ -35,15 +36,16 @@ let ball = new Ball(5, "#FFFFFF", puttSounds);
 
 // hole 1
 let cup1 = new Cup(800, 250, 10);
-let walls1 = [  new Wall(150, 100, 20, 300),
-                new Wall(150, 100, 750, 20),
-                new Wall(150, 380, 750, 20),
-                new Wall(900, 100, 20, 300)
-             ];
-let zones1 = [  new Zone(170, 120, 110, 260, "#156601"),
-                new Zone(280, 120, 620, 260, "#1C8014")
-             ];
-let hole1 = new Hole(cup1, walls1, zones1, 225, 250, 2);
+let walls1 =    [   new Wall(150, 100, 20, 300),
+                    new Wall(150, 100, 750, 20),
+                    new Wall(150, 380, 750, 20),
+                    new Wall(900, 100, 20, 300)
+                ];
+let zones1 =    [   new Zone(170, 120, 110, 260, "#156601"),
+                    new Zone(280, 120, 620, 260, "#1C8014")
+                ];
+let slopes1 =   [   new Slope(400, 120, 200, 260, "#156601", -1.6, 0)];
+let hole1 = new Hole(cup1, walls1, zones1, slopes1, 225, 250, 2);
 
 let holes = [hole1];
 

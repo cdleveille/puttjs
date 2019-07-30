@@ -101,6 +101,15 @@ export default class Game {
                 }
             }
         }
+
+        // ball is over a slope
+        for (var i = 0; i < this.currentHole.slopes.length; i++) {
+            let slope = this.currentHole.slopes[i];
+            if (slope.ballIsOver(this.ball)) {
+                this.ball.xv += slope.slopeAccelX;
+                this.ball.yv += slope.slopeAccelY;
+            }
+        }
     }
 
     // determine whether the ball is over the cup
@@ -169,6 +178,11 @@ export default class Game {
         // draw zones
         for (var i = 0; i < this.currentHole.zones.length; i++) {
             this.currentHole.zones[i].draw(ctx);
+        }
+
+        // draw slopes
+        for (var i = 0; i < this.currentHole.slopes.length; i++) {
+            this.currentHole.slopes[i].draw(ctx);
         }
 
         // draw walls

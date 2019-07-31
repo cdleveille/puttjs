@@ -1,7 +1,6 @@
 export default class Ball {
-    constructor(radius, color, puttSounds) {
+    constructor(radius, puttSounds) {
         this.radius = radius;
-        this.color = color;
         this.leftHeld = false;
         this.rightHeld = false;
         this.upHeld = false;
@@ -63,7 +62,14 @@ export default class Ball {
     
             this.xv += -xDiff * 5;
             this.yv += -yDiff * 5;
+
+            this.game.currentHole.strokeCount++;
         }
+    }
+
+    moveTo(x, y) {
+        this.x = x;
+        this.y = y;
     }
 
     decel(rollDecel) {
@@ -133,7 +139,7 @@ export default class Ball {
     }
 
     draw(ctx) {
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
         ctx.fill();

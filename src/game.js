@@ -2,6 +2,7 @@ export default class Game {
     constructor(backgroundColor, ball, holes, cupSound, wallSounds) {
         this.backgroundColor = backgroundColor;
         this.ball = ball;
+        this.ball.game = this;
         this.holes = holes;
         this.cupSound = cupSound;
         this.wallSounds = wallSounds;
@@ -24,6 +25,14 @@ export default class Game {
         this.ball.y = this.currentHole.startY;
         this.ball.xv = 0;
         this.ball.yv = 0;
+        this.spottingBall = true;
+    }
+
+    attemptToSpotBall() {
+        if ((this.ball.x - this.ball.radius > this.currentHole.startZone.x && this.ball.x + this.ball.radius < this.currentHole.startZone.x + this.currentHole.startZone.width) &&
+            (this.ball.y - this.ball.radius > this.currentHole.startZone.y && this.ball.y + this.ball.radius < this.currentHole.startZone.y + this.currentHole.startZone.height)) {
+                this.spottingBall = false;
+            }
     }
 
     // get the current time (high precision)
@@ -165,8 +174,10 @@ export default class Game {
     }
 
     update(step) {
-        this.ball.update(step, this.rollDecel);
-        this.handleCollisions();
+        if (!this.spottingBall) {
+            this.ball.update(step, this.rollDecel);
+            this.handleCollisions();
+        }
     }
 
     draw(ctx) {

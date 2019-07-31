@@ -32,20 +32,22 @@ let cupSound = new Sound("/snd/cup.mp3");
 
 let backgroundColor = "#555555";
 
-let ball = new Ball(5, "#FFFFFF", puttSounds);
+let ball = new Ball(5, puttSounds);
 
 // hole 1
 let cup1 = new Cup(800, 250, 10);
+let startZone = { x: 170, y: 120, width: 110, height: 260 };
+let zones1 =    [   new Zone(170, 120, 110, 260, "#156601"),
+                    new Zone(280, 120, 620, 260, "#1C8014"),
+                    new Zone(600, 120, 300, 260, "#045500")
+                ];
+let slopes1 =   [   new Slope(400, 120, 200, 260, "#1C8014", "#045500", -1.6, 0)];
 let walls1 =    [   new Wall(150, 100, 20, 300),
                     new Wall(150, 100, 750, 20),
                     new Wall(150, 380, 750, 20),
                     new Wall(900, 100, 20, 300)
                 ];
-let zones1 =    [   new Zone(170, 120, 110, 260, "#156601"),
-                    new Zone(280, 120, 620, 260, "#1C8014")
-                ];
-let slopes1 =   [   new Slope(400, 120, 200, 260, "#156601", -1.6, 0)];
-let hole1 = new Hole(cup1, walls1, zones1, slopes1, 225, 250, 2);
+let hole1 = new Hole(cup1, walls1, zones1, slopes1, startZone, 2);
 
 let holes = [hole1];
 

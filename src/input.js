@@ -40,13 +40,26 @@ export default class InputHandler{
         });
 
         canvas.addEventListener('click', (event) => {
-            let clickX = event.clientX - ((window.innerWidth - canvas.width) / 2)
-            let clickY = event.clientY - ((window.innerHeight - canvas.height) / 2)
+            let clickX = event.clientX - ((window.innerWidth - canvas.width) / 2);
+            let clickY = event.clientY - ((window.innerHeight - canvas.height) / 2);
 
             game.shadowX = clickX;
             game.shadowY = clickY;
             
-            game.ball.hitAction(clickX, clickY);
+            if (!game.spottingBall) {
+                game.ball.hitAction(clickX, clickY);
+            } else {
+                game.attemptToSpotBall();
+            }
+        });
+
+        canvas.addEventListener('mousemove', (event) => {
+            if (game.spottingBall) {
+                let mouseX = event.clientX - ((window.innerWidth - canvas.width) / 2);
+                let mouseY = event.clientY - ((window.innerHeight - canvas.height) / 2);
+
+                game.ball.moveTo(mouseX, mouseY);
+            }
         });
     }
 }

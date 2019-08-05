@@ -30,6 +30,8 @@ let wallSounds = {
 
 let cupSound = new Sound("/snd/cup.mp3");
 
+let popSound = new Sound("/snd/pop.mp3");
+
 let backgroundColor = "#555555";
 
 let ball = new Ball(5, puttSounds);
@@ -51,7 +53,7 @@ let hole1 = new Hole(cup1, walls1, zones1, slopes1, startZone, 2);
 
 let holes = [hole1];
 
-let game = new Game(backgroundColor, ball, holes, cupSound, wallSounds);
+let game = new Game(backgroundColor, ball, holes, cupSound, wallSounds, popSound);
 game.loadHole(0);
 
 let windowHandler = new WindowHandler(canvas, game, .9);

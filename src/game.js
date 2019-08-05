@@ -1,5 +1,5 @@
 export default class Game {
-    constructor(backgroundColor, ball, holes, cupSound, wallSounds) {
+    constructor(backgroundColor, ball, holes, cupSound, wallSounds, popSound) {
         this.backgroundColor = backgroundColor;
         this.ball = ball;
         this.ball.game = this;
@@ -7,6 +7,7 @@ export default class Game {
         this.cupSound = cupSound;
         this.wallSounds = wallSounds;
         this.playCupSound = true;
+        this.popSound = popSound;
 
         this.rollDecel = 0.37;
         this.cupDecel = 12;
@@ -32,6 +33,7 @@ export default class Game {
         if ((this.ball.x - this.ball.radius > this.currentHole.startZone.x && this.ball.x + this.ball.radius < this.currentHole.startZone.x + this.currentHole.startZone.width) &&
             (this.ball.y - this.ball.radius > this.currentHole.startZone.y && this.ball.y + this.ball.radius < this.currentHole.startZone.y + this.currentHole.startZone.height)) {
                 this.spottingBall = false;
+                this.popSound.play();
             }
     }
 

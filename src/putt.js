@@ -39,7 +39,7 @@ let ball = new Ball(5, puttSounds);
 
 // hole 1
 let cup1 = new Cup(800, 250, 10);
-let startZone = { x: 170, y: 120, width: 110, height: 260 };
+let startZone1 = { x: 170, y: 120, width: 110, height: 260 };
 let zones1 = 	[	new Zone(170, 120, 110, 260, "#156601"),
 					new Zone(280, 120, 620, 260, "#1C8014"),
 					new Zone(600, 120, 300, 260, "#045500")
@@ -50,9 +50,18 @@ let walls1 =	[	new Wall(150, 100, 20, 300),
 					new Wall(150, 380, 750, 20),
 					new Wall(900, 100, 20, 300)
 				];
-let hole1 = new Hole(cup1, walls1, zones1, slopes1, startZone, 2);
+let hole1 = new Hole(cup1, walls1, zones1, slopes1, startZone1, 2);
 
-let holes = [hole1];
+let hole2 = Object.assign({}, hole1);
+let hole3 = Object.assign({}, hole1);
+let hole4 = Object.assign({}, hole1);
+let hole5 = Object.assign({}, hole1);
+let hole6 = Object.assign({}, hole1);
+let hole7 = Object.assign({}, hole1);
+let hole8 = Object.assign({}, hole1);
+let hole9 = Object.assign({}, hole1);
+
+let holes = [hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9];
 
 let scoreCard = new ScoreCard(holes);
 

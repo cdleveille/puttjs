@@ -7,7 +7,7 @@ export default class Ball {
 
 	hitAction(clickX, clickY) {
 		let currentBallVelocity = Math.sqrt(Math.pow(this.xv, 2) + Math.pow(this.yv, 2));
-		if (currentBallVelocity < 1 || this.isInCup) {
+		if (currentBallVelocity < 1 && !this.game.isFrozen) {
 
 			let xDiff = clickX - this.x;
 			let yDiff = clickY - this.y;

@@ -3,9 +3,6 @@ export default class InputHandler{
 		canvas.addEventListener('click', (event) => {
 			let clickX = event.clientX - ((window.innerWidth - canvas.width) / 2);
 			let clickY = event.clientY - ((window.innerHeight - canvas.height) / 2);
-
-			game.shadowX = clickX;
-			game.shadowY = clickY;
 			
 			if (game.spottingBall) {
 				game.attemptToSpotBall();

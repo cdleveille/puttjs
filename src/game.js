@@ -6,7 +6,6 @@ export default class Game {
 		this.holes = holes;
 		this.cupSound = cupSound;
 		this.wallSounds = wallSounds;
-		this.playCupSound = true;
 		this.popSound = popSound;
 		this.scoreCard = scoreCard;
 		this.currentHoleNum;
@@ -14,10 +13,7 @@ export default class Game {
 		this.rollDecel = 0.37;
 		this.cupDecel = 12;
 		this.cupCenterPull = 12;
-
 		this.bounceWall = 0.35;
-		
-		this.roundStokeCount = 0;
 	}
 
 	loadHole(num) {
@@ -28,7 +24,10 @@ export default class Game {
 		this.ball.y = this.currentHole.startY;
 		this.ball.xv = 0;
 		this.ball.yv = 0;
+		this.playCupSound = true;
 		this.spottingBall = true;
+		this.isFrozen = false;
+		this.showScoreCard = false;
 	}
 
 	attemptToSpotBall() {
@@ -76,10 +75,19 @@ export default class Game {
 				this.ball.yv = 0;
 				this.ball.radius = 4;
 				this.ball.color = "#CCCCCC";
-				this.currentHole.score = this.currentHole.strokeCount;
-				if (this.playCupSound) {
+				if (this.playCupSound && !this.isFrozen) {
 					this.cupSound.play();
 					this.playCupSound = false;
+					this.isFrozen = true;
+					this.frozenAtTime = this.timestamp();
+					//this.showScoreCard = true;
+				} else if (this.timestamp() - this.frozenAtTime > 1000) {
+					this.showScoreCard = true;
+					if (this.timestamp() - this.frozenAtTime > 5000) {
+						if (this.currentHoleNum < 8) {
+							this.loadHole(this.currentHoleNum + 1);
+						}
+					}
 				}
 			}
 		} else {
@@ -209,12 +217,15 @@ export default class Game {
 		// draw text
 		ctx.font = "24px Arial";
 		ctx.fillStyle = "#000000";
-		ctx.fillText("Hole " + (this.currentHoleNum + 1) + " | Par " + this.currentHole.par + " | Strokes: " + this.currentHole.strokeCount, this.gameWidth / 2 - (this.gameWidth / 10), (this.gameHeight / 12));
+		ctx.fillText("Hole " + (this.currentHoleNum + 1) + " | Par " + this.currentHole.par + " | Strokes: " + this.currentHole.strokeCount, this.gameWidth / 2 - (this.gameWidth / 10), (this.gameHeight / 12) - 10);
 
 		this.cup.draw(ctx);
 
 		this.ball.draw(ctx);
 
 		// draw scorecard
+		if (this.showScoreCard) {
+			this.scoreCard.draw(ctx);
+		}
 	}
 }

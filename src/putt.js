@@ -80,8 +80,8 @@ function frame() {
 	dt = Math.min(1, (now - last) / 1000);
 
 	while(dt > step) {
-			dt = dt - step;
-			game.update(step);
+		dt = dt - step;
+		game.update(step);
 	}
 
 	game.draw(ctx);

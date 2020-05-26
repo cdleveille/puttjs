@@ -9,7 +9,7 @@ export default class Game {
 		this.popSound = popSound;
 		this.scoreCard = scoreCard;
 		this.currentHoleNum;
-
+		
 		this.rollDecel = 0.37;
 		this.cupDecel = 12;
 		this.cupCenterPull = 12;
